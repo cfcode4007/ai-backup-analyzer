@@ -1,0 +1,6 @@
+{
+  "Prompts File": "prompts.json",
+  "Chat History File": "chat_history.json",
+  "Log File": "ai_backup_analyzer.log",
+  "Log Mode": "Debug"
+}
