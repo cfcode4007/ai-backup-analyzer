@@ -3,11 +3,14 @@ from Preferences import Preferences
 import os
 import logging
 from datetime import datetime
+from collections import deque
 
 # GPT Home Assistant wrapper over Payload, ChatHistoryManager, Config, ModelConnection, PromptBuilder 
 class AIBackupAnalyzer:
 
-    version = "0.0.1"
+    version = "0.0.2"
+    # Version 0.0.2:
+    # - Modified the user input debug message to keep most recent logs and split into multiple lines for readability
 
     log_file = ""
 
@@ -59,70 +62,61 @@ class AIBackupAnalyzer:
 
     def get_backup_data(self, input_file):
         """Retrieve backup data from the Server."""
-        # if not input_file:
-        #     raise ValueError("Usage: get_ha_entity_info(<entity_list_file>)")
-
         # Resolve file path relative to the script directory
         script_dir = os.path.dirname(os.path.abspath(__file__))
         input_path = os.path.join(script_dir, input_file)
 
         try:
+            # Keep the most recent 20 non-empty lines (preserve order)
+            last_lines = deque(maxlen=20)
             with open(input_path, "r", encoding="utf-8") as f:
-                backup_data = [line.strip() for line in f if line.strip()]
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        last_lines.append(line)
+            backup_data = list(last_lines)
         except FileNotFoundError:
             raise FileNotFoundError(f"Entity list file not found: {input_path}")
-        
-        # Previous backup data for testing
-        # backup_data = "[2025-11-30 16:07:01] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)"
-        # backup_data += "\n[2025-11-30 16:07:15] ✅ Incremental Backup Completed (s2Pool/ROOT/rPool → server01/backup/server02/rPool)"
-        # backup_data += "\n[2025-11-30 16:07:15] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)"
-        # backup_data += "\n[2025-11-30 16:07:44] ✅ Incremental Backup Completed (s2Pool/VMz → server01/backup/server02/VMz)"
-        # backup_data += "\n[2025-11-30 16:07:44] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)"
-        # backup_data += "\n[2025-11-30 16:11:40] ✅ Incremental Backup Completed (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)"
-        # backup_data += "\n[2025-11-30 16:11:40] Script /usr/local/bin/zfs-backup.sh completed."
-        # backup_data += "\n[2025-11-30 16:11:40] *****************************************************************************************"
-        # backup_data += "\n[2025-12-01 16:00:59] *****************************************************************************************"
-        # backup_data += "\n[2025-12-01 16:00:59] Script /usr/local/bin/zfs-backup.sh starting at 2025-12-01 16:00:59"
-        # backup_data += "\n[2025-12-01 16:00:59] Using config file: /usr/local/etc/zfs-backup.conf"
-        # backup_data += "\n[2025-12-01 16:00:59] Using log file: /var/log/zfs-backup.log"
-        # backup_data += "\n[2025-12-01 16:00:59] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)"
-        # backup_data += "\n[2025-12-01 16:01:16] ✅ Incremental Backup Completed (s2Pool/ROOT/rPool → server01/backup/server02/rPool)"
-        # backup_data += "\n[2025-12-01 16:01:16] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)"
-        # backup_data += "\n[2025-12-01 16:01:49] ✅ Incremental Backup Completed (s2Pool/VMz → server01/backup/server02/VMz)"
-        # backup_data += "\n[2025-12-01 16:01:49] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)"
-        # backup_data += "\n[2025-12-01 16:05:51] ✅ Incremental Backup Completed (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)"
-        # backup_data += "\n[2025-12-01 16:05:51] Script /usr/local/bin/zfs-backup.sh completed."
-        # backup_data += "\n[2025-12-01 16:05:51] *****************************************************************************************"
 
         return backup_data
 
 # ============================================================= M A I N ==================================================
 
     def main(self):
+        input_file = 'sample_backup_data.log'
+
         # Indicate start of the log for this run of the program
         logging.info("\n💡")
         logging.info(f"AI Backup Analyzer v{self.version} class currently using ModelConnection v{self.payload.connection.version}, PromptBuilder v{self.payload.prompts.version}, ChatHistoryManager v{self.payload.history.version}, Preferences v{self.preferences.version}, Payload v{self.payload.version}")      
 
         # Initialize AI analyzer
-        self.payload.connection.set_model("gpt-5-mini")        
+        self.payload.prompts.load_prompt("backup3")        
         self.payload.connection.set_maximum_tokens(500)
+        
+        # GPT 5 mini
+        self.payload.connection.set_model("gpt-5-mini")        
         self.payload.connection.set_verbosity("low")
         self.payload.connection.set_reasoning_effort("minimal")
-        self.payload.prompts.load_prompt("backup")
-        self.payload.history.load_history("default")
-        logging.info("!!!! History is currently being Reset for each interaction !!!!")
-        self.payload.history.reset_history()
+
+        # GPT 4o mini
+        # self.payload.connection.set_model("gpt-4o-mini")        
 
         # Get the current date in a format that matches the incoming log lines for AI context        
         # current_date = datetime.now().strftime('%Y-%m-%d')
-        current_date = '2025-12-01'
+        current_date = '2025-11-30'
         # Add dynamic information to the prompt below system instructions        
-        prompt_addendum = f"\n\nUSER INPUT\nCurrent Date: [{current_date}]\nRaw Backup Log Lines:"
-        backup_to_analyze = self.get_backup_data('sample_backup_data.log')
-        
+        prompt_addendum = f"The Current Date is [{current_date}]\n"
+        backup_to_analyze = self.get_backup_data(input_file)
+
         # Prepare and send message to AI
         logging.info(f"Model: {self.payload.connection.model}, Verbosity: {self.payload.connection.verbosity}, Reasoning: {self.payload.connection.reasoning_effort}, Max Tokens: {self.payload.connection.maximum_tokens}")
-        logging.info(f"User Message: \n{self.payload.prompts.get_prompt()} \n{prompt_addendum} \n{backup_to_analyze}")
+        # Format backup lines as a multiline string for easier debugging (one line per entry, indented)
+        if isinstance(backup_to_analyze, list):
+            backup_text = "\n".join(f"  {line}" for line in backup_to_analyze)
+        else:
+            backup_text = str(backup_to_analyze)
+
+        logging.debug(f"User Message: \n{self.payload.prompts.get_prompt()} \n{prompt_addendum} \n{backup_text}")
         # We don't want to automatically add the AI response to chat history since it will be full of json
         # for the entities, devices, data, variables etc.  The important thing is to keep chat context
         # Therefore, we turn off auto, clean up response before logging both user/assistant messages to keep sync
@@ -131,7 +125,6 @@ class AIBackupAnalyzer:
         reply = self.payload.send_message(backup_to_analyze, 'backup', prompt_addendum)
         logging.info(f"Assistant Raw Reply: {reply}")        
         return reply
-
 
 if __name__ == "__main__":
     # Change the current working directory to this script for imports and relative pathing
