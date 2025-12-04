@@ -1,30 +1,15 @@
-[2025-11-28 16:15:16] *****************************************************************************************
-[2025-11-28 16:15:16] Script /usr/local/bin/zfs-backup.sh starting at 2025-11-28 16:15:16
-[2025-11-28 16:15:16] Using config file: /usr/local/etc/zfs-backup.conf
-[2025-11-28 16:15:16] Using log file: /var/log/zfs-backup.log
-[2025-11-28 16:15:16] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)
-[2025-11-28 16:15:16] ✓ Skipping s2Pool/ROOT/rPool → server01/backup/server02/rPool (disabled)
-[2025-11-28 16:15:16] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)
-[2025-11-28 16:15:16] ✓ Skipping s2Pool/VMz → server01/backup/server02/VMz (disabled)
-[2025-11-28 16:15:16] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
-[2025-11-29 16:01:00] *****************************************************************************************
-[2025-11-29 16:01:00] Script /usr/local/bin/zfs-backup.sh starting at 2025-11-29 16:01:00
-[2025-11-29 16:01:00] Using config file: /usr/local/etc/zfs-backup.conf
-[2025-11-29 16:01:00] Using log file: /var/log/zfs-backup.log
-[2025-11-29 16:01:00] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)
-[2025-11-29 16:01:00] ✓ Skipping s2Pool/ROOT/rPool → server01/backup/server02/rPool (disabled)
-[2025-11-29 16:01:00] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)
-[2025-11-29 16:01:00] ✓ Skipping s2Pool/VMz → server01/backup/server02/VMz (disabled)
-[2025-11-29 16:01:00] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
-[2025-11-29 16:08:53] ✅ Incremental Backup Completed (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
-[2025-11-29 16:08:53] Script /usr/local/bin/zfs-backup.sh completed.
-[2025-11-29 16:08:53] *****************************************************************************************
-[2025-11-30 16:07:01] *****************************************************************************************
-[2025-11-30 16:07:01] Script /usr/local/bin/zfs-backup.sh starting at 2025-11-30 16:07:01
-[2025-11-30 16:07:01] Using config file: /usr/local/etc/zfs-backup.conf
-[2025-11-30 16:07:01] Using log file: /var/log/zfs-backup.log
-[2025-11-30 16:07:01] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)
-[2025-11-30 16:07:15] ✓ Skipping s2Pool/ROOT/rPool → server01/backup/server02/rPool (disabled)
-[2025-11-30 16:07:15] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)
-[2025-11-30 16:07:44] ✓ Skipping s2Pool/VMz → server01/backup/server02/VMz (disabled)
-[2025-11-30 16:07:44] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
+[2025-11-27 16:01:38] ✅ Incremental Backup Completed (s2Pool/VMz → server01/backup/server02/VMz)
+[2025-11-27 16:01:38] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
+[2025-11-27 16:05:32] ⨯ FAIL on send_incremental_backup() -> run_zfs_cmd()  Running: [zfs send -Rvci s2Pool/Incus/containers@S2-Backup-2025-11-26_16.02.07 s2Pool/Incus/containers@S2-Backup-2025-11-27_16.01.52 | ssh 192.168.123.230 zfs recv -F server01/backup/server02/Incus/containers]
+[2025-11-27 16:05:32] ❌ ERROR: Incremental Backup Failed (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
+[2025-11-27 16:05:32] Script /usr/local/bin/zfs-backup.sh completed.
+[2025-11-27 16:05:32] *****************************************************************************************
+[2025-11-28 16:00:58] *****************************************************************************************
+[2025-11-28 16:00:58] Script /usr/local/bin/zfs-backup.sh starting at 2025-11-28 16:00:58
+[2025-11-28 16:00:58] Using config file: /usr/local/etc/zfs-backup.conf
+[2025-11-28 16:00:58] Using log file: /var/log/zfs-backup.log
+[2025-11-28 16:00:58] ⚙ Processing Dataset (s2Pool/ROOT/rPool → server01/backup/server02/rPool)
+[2025-11-28 16:01:12] ✅ Incremental Backup Completed (s2Pool/ROOT/rPool → server01/backup/server02/rPool)
+[2025-11-28 16:01:12] ⚙ Processing Dataset (s2Pool/VMz → server01/backup/server02/VMz)
+[2025-11-28 16:01:36] ✅ Incremental Backup Completed (s2Pool/VMz → server01/backup/server02/VMz)
+[2025-11-28 16:01:36] ⚙ Processing Dataset (s2Pool/Incus/containers → server01/backup/server02/Incus/containers)
