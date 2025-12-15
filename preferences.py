@@ -1,10 +1,15 @@
+# © 2025 Colin Bond
+# All rights reserved.
+
 import json
 from pathlib import Path
 
 
 class Preferences:
-    
-    version = "0.0.1"  # Class attribute for version
+    """
+    Accessible configuration/settings management class for AIBackupAnalyzer and other similar projects.
+    """
+    version = "0.0.1"
         
     def __init__(self, preferences_file: str):
         self.preferences_file = Path(preferences_file)

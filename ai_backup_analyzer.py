@@ -1,3 +1,6 @@
+# © 2025 Colin Bond
+# All rights reserved.
+
 import os
 import logging
 from datetime import datetime
@@ -5,16 +8,18 @@ from collections import deque
 
 import requests
 from ailib import Payload
-from Preferences import Preferences
+from preferences import Preferences
 
-# GPT Home Assistant wrapper over Payload, ChatHistoryManager, Config, ModelConnection, PromptBuilder 
 class AIBackupAnalyzer:
+    """
+    Provides functions to take a log file and use AI to generate analysis for it.
+    Can send POST notifications if a failure or abnormality is indicated.
+    """
 
-    version = "0.0.3"
-    # Version 0.0.3:
-    # - Simplified output to a more notification-friendly form, and it will now be sent as one if the backup log yields unexpected results
-    # Version 0.0.2:
-    # - Modified the user input debug message to keep most recent logs and split into multiple lines for readability
+    version = "0.0.4"
+    # - Version 0.0.4: Added explicit copyright and polished descriptions for classes
+    # - Version 0.0.3: Simplified output to a more notification-friendly form, and it will now be sent as one if the backup log yields unexpected results
+    # - Version 0.0.2: Modified the user input debug message to keep most recent logs and split into multiple lines for readability
 
     log_file = ""
 
